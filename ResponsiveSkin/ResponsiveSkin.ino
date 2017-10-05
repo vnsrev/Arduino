@@ -9,20 +9,24 @@ const int arm1Pin=9;
 int sensorValue=0;
 int currentPosition=0;
 int newPosition=0;
+int pos=0;
 int servoSpeed=20;
-int refresh=5000;
+int refresh=1000;
 int sensorSensibility=2;
 
-int initialise(){
-        arm1.write(0);
-        delay(3000);
-}
 
 int displayData(){
         Serial.print("sensor =");
         Serial.print(sensorValue);
         Serial.print("\t Angle d'ouverture =");
-        Serial.println(currentPosition);
+        Serial.print(currentPosition);
+        Serial.print("\t Angle mesuré =");
+        Serial.println(pos);
+}
+
+int initialise(){
+        arm1.write(50);
+        delay(3000);
 }
 
 void setup() {
@@ -33,6 +37,7 @@ void setup() {
 }
 
 void loop() {
+        currentPosition=arm1.read();
         sensorValue=analogRead(SensorPin);
         newPosition=map(sensorValue,0,1023,120,0);
         if(currentPosition<newPosition+sensorSensibility && currentPosition>newPosition-sensorSensibility) {
@@ -52,6 +57,7 @@ void loop() {
                         }
                 }
         }
+        pos=arm1.read();
         displayData();
         delay(refresh);
 }
